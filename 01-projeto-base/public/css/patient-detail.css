@@ -1,0 +1,241 @@
+/* ============================================================
+   COMPONENTES DA TELA DE DETALHE DO PACIENTE
+   ------------------------------------------------------------
+   Segue a mesma convenção BEM e os mesmos tokens já definidos
+   em tokens.css. Nenhum valor mágico aqui também.
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   BLOCO: breadcrumb-link
+   ------------------------------------------------------------ */
+.breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--espaco-1);
+  margin-bottom: var(--espaco-4);
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.breadcrumb-link:hover {
+  color: var(--cor-marca-escura);
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------------------
+   BLOCO: patient-summary
+   Reaproveita a mesma "linguagem" do .patient-card (superfície,
+   borda, raio, sombra), só que como cabeçalho de página.
+   ------------------------------------------------------------ */
+.patient-summary {
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  box-shadow: var(--sombra-1);
+  padding: var(--espaco-5);
+  margin-bottom: var(--espaco-6);
+
+  display: flex;
+  flex-direction: column;      /* celular: empilhado */
+  gap: var(--espaco-5);
+}
+
+@media (min-width: 768px) {
+  .patient-summary {
+    flex-direction: row;       /* tablet+: nome/campos à esquerda, ações à direita */
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+}
+
+.patient-summary__heading {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--espaco-4);
+}
+
+.patient-summary__name {
+  margin: 0;
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .patient-summary__name {
+    font-size: 1.75rem;
+  }
+}
+
+.patient-summary__fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-3) var(--espaco-6);
+}
+
+@media (min-width: 600px) {
+  .patient-summary__fields {
+    grid-template-columns: repeat(3, auto);
+  }
+}
+
+.patient-summary__field-label {
+  margin: 0 0 var(--espaco-1);
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.patient-summary__field-value {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.patient-summary__field-value--mono {
+  font-family: var(--fonte-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.patient-summary__actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--espaco-3);
+  flex-shrink: 0;
+}
+
+.patient-summary__body {
+  flex: 1;
+  min-width: 0; /* evita que texto longo estoure a largura do flex item */
+}
+
+@media (min-width: 768px) {
+  .patient-summary__actions {
+    flex-direction: column;
+  }
+}
+
+/* ------------------------------------------------------------
+   BLOCO: action-button
+   Botões próprios (não usamos as cores padrão do Bootstrap
+   para não fugir da marca definida em tokens.css).
+   ------------------------------------------------------------ */
+.action-button {
+  border: 1px solid transparent;
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-2) var(--espaco-4);
+  font-size: 0.875rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.action-button--primary {
+  background-color: var(--cor-marca);
+  color: var(--cor-texto-invertido);
+}
+
+.action-button--primary:hover {
+  background-color: var(--cor-marca-escura);
+}
+
+.action-button--ghost {
+  background-color: transparent;
+  border-color: var(--cor-borda);
+  color: var(--cor-texto-suave);
+}
+
+.action-button--ghost:hover {
+  border-color: var(--cor-texto-suave);
+  color: var(--cor-texto);
+}
+
+/* ------------------------------------------------------------
+   BLOCO: section-heading
+   Título de seção reutilizável (ex.: "Atendimentos").
+   ------------------------------------------------------------ */
+.section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: var(--espaco-2);
+  margin-bottom: var(--espaco-4);
+}
+
+.section-heading__title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 700;
+}
+
+.section-heading__count {
+  margin: 0;
+  color: var(--cor-texto-suave);
+  font-size: 0.875rem;
+}
+
+/* ------------------------------------------------------------
+   BLOCO: encounter-list / encounter-card
+   Mesma lógica do .patient-list / .patient-card: lista sem
+   marcadores, cards com superfície + borda + raio + sombra.
+   ------------------------------------------------------------ */
+.encounter-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--espaco-3);
+  margin: 0 0 var(--espaco-6);
+  padding: 0;
+  list-style: none;
+}
+
+.encounter-card {
+  position: relative;
+  background-color: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-md);
+  box-shadow: var(--sombra-1);
+  padding: var(--espaco-4) var(--espaco-4) var(--espaco-4) var(--espaco-5);
+}
+
+/* Faixa lateral: reforça a leitura cronológica sem depender só de cor. */
+.encounter-card::before {
+  content: "";
+  position: absolute;
+  top: var(--espaco-3);
+  bottom: var(--espaco-3);
+  left: 0;
+  width: 4px;
+  border-radius: var(--raio-sm);
+  background-color: var(--cor-marca);
+}
+
+.encounter-card__date {
+  margin: 0 0 var(--espaco-2);
+  color: var(--cor-texto-suave);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.encounter-card__complaint {
+  margin: 0 0 var(--espaco-2);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.encounter-card__notes {
+  margin: 0;
+  color: var(--cor-texto);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.encounter-card__notes--empty {
+  color: var(--cor-texto-suave);
+  font-style: italic;
+}
