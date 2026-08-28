@@ -3,11 +3,8 @@ import { getEncounterFormData } from "./form-patient-encounter.js";
 import { renderErrorPatient, renderLoading, renderPatientEncounters, renderPatientSummary, renderEncounterFormError } from "./render.js";
 import { setError, setPatient, subscribe, getState, setEncounters } from "./state.js";
 
-const patientSummaryStatus = document.querySelector('#patient-summary__status');
-const patientSummaryHeading = document.querySelector('#patient-summary__heading');
-const patientSummaryFields = document.querySelector('#patient-summary__fields');
+const patientSummary = document.querySelector('#patient-summary');
 const sectionHeadingTitle = document.querySelector('#section-heading__title');
-const patientSummaryActions = document.querySelector('#patient-summary__actions');
 const encounterList = document.querySelector('#encounter-list'); 
 const newEncounterForm = document.querySelector('#new-encounter-form');
 const encounterFormError = document.querySelector('#encounter-form__error');
@@ -17,18 +14,15 @@ const newEncounterModal = bootstrap.Modal.getOrCreateInstance(newEncounterModalE
 
 function renderAppPatient(state) {
     if (state.errorMessagePatient) {
-        renderErrorPatient(state.errorMessagePatient, patientSummaryStatus, patientSummaryActions);
-        sectionHeadingTitle.textContent = '';
+        renderErrorPatient(state.errorMessagePatient, patientSummary);
         return;
     }
 
     if (state.isLoading) {
-        renderLoading(patientSummaryStatus, patientSummaryActions);
-        sectionHeadingTitle.textContent = '';
+        renderLoading(patientSummary);
         return;
     }
-    patientSummaryStatus.innerHTML = '';
-    renderPatientSummary(state.patient, patientSummaryHeading, patientSummaryFields, patientSummaryActions);
+    renderPatientSummary(state.patient, patientSummary);
     renderPatientEncounters(state.encounters, encounterList);
 }
 
@@ -38,7 +32,7 @@ newEncounterForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   encounterFormError.innerHTML = '';
 
-  const encounterData = getEncounterFormData(newEncounterForm)
+  const encounterData = getEncounterFormData(newEncounterForm);
 
   saveEncounter(encounterData);
 });
@@ -60,19 +54,19 @@ async function saveEncounter(encounterData) {
 }
 
 async function start() {
+    console.log(getState());
     renderAppPatient(getState());
     const params = new URLSearchParams(window.location.search);
     const patientId = params.get('id');
 
     try {
-    const [patient, encounters] = await Promise.all([
-        getPatient(patientId),
-        getPatientEncounters(patientId)
-    ])
+        const [patient, encounters] = await Promise.all([
+            getPatient(patientId),
+            getPatientEncounters(patientId)
+        ])
 
-    setPatient(patient);
-    setEncounters(encounters);
-    
+        setPatient(patient);
+        setEncounters(encounters); 
     }
     catch (error) {
         setError(error.message);

@@ -82,7 +82,7 @@ export async function createPatientEncounter(patientId, encounterData) {
   })
 
   if (response.status === 404 || response.status === 400) {
-    const body = response.json();
+    const body = await response.json();
     throw new Error(body.error);
   }
   if (!response.ok) {
