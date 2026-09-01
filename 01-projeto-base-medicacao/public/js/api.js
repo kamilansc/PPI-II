@@ -58,6 +58,8 @@ export async function getMedication(id) {
     const body = await response.json();
     throw new Error (body.error);
   }
+
+  return response.json();
 }
 
 // ============================================================
