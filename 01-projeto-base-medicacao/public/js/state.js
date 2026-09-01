@@ -52,7 +52,6 @@ export function setMedications(medications) {
   notify();
 }
 
-
 /** Registra uma falha de carregamento da lista. */
 export function setError(message) {
   state.errorMessage = message;
@@ -75,7 +74,16 @@ export function addMedication(medication) {
 //   selectMedication: guarda o id, zera erro de detalhe, notify()
 //   clearSelection: volta selectedId para null, notify()
 // ============================================================
+export function selectMedication(id) {
+  state.selectedId = id;
+  state.detailErrorMessage = null;
+  notify();
+}
 
+export function clearSelection() {
+  state.selectedId = null;
+  notify();
+}
 
 /** Registra uma falha ao buscar o detalhe. */
 export function setDetailError(message) {

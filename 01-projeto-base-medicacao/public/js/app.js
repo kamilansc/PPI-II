@@ -5,9 +5,9 @@
  * evento -> ação -> estado -> render -> tela. Sempre nesse sentido.
  * ============================================================
  */
-import { createMedication, listMedications } from "./api.js";
-import { subscribe, getState, setMedications, setError, addMedication } from "./state.js";
-import { renderCounter, renderLoading, renderError, renderMedicationList } from "./render.js";
+import { createMedication, getMedication, listMedications } from "./api.js";
+import { subscribe, getState, setMedications, setError, addMedication, selectMedication, setDetailError } from "./state.js";
+import { renderCounter, renderLoading, renderError, renderMedicationList, renderDetail } from "./render.js";
 
 const medicationListElement = document.querySelector("#medication-list");
 const resultCounterElement = document.querySelector("#result-counter");
@@ -38,6 +38,7 @@ function renderApp(state) {
   // PASSO 2: chame renderMedicationList aqui
   renderMedicationList(state.medications, medicationListElement)
   // PASSO 4: chame renderDetail(state, detailPanelElement) aqui
+  renderDetail(state, detailPanelElement);
 
   renderCounter(state.medications.length, resultCounterElement);
 }
@@ -64,7 +65,7 @@ subscribe(renderApp);
 //   ler os inputs, chamar createMedication(), addMedication(),
 //   limpar o formulário, mostrar feedback de sucesso/erro
 // ============================================================
-saveButton.addEventListener("click", async (event) => {
+saveButton.addEventListener("click", async () => {
   saveButton.disabled = true;
   formFeedbackElement.textContent = "Enviando...";
 
@@ -82,7 +83,7 @@ saveButton.addEventListener("click", async (event) => {
     
     formFeedbackElement.textContent = "Prescrição adicionada com sucesso!!";
     patientNameInput.value = "";
-    medicationListElement.value = "";
+    medicationNameInput.value = "";
     dosageInput.value = "";
     routeInput.value = "";
     scheduledAtInput.value = "";
@@ -103,7 +104,23 @@ saveButton.addEventListener("click", async (event) => {
 //   event.target.closest('[data-medication-id]') -> selectMedication(id)
 //   -> buscar o detalhe com getMedication(id) -> tratar 404
 // ============================================================
+medicationListElement.addEventListener("click", (event) => {
+  const card = event.target.closest('[data-medication-id]');
+  if (card) {
+    openMedicationDetail(Number(card.dataset.medicationId));
+  }
+})
 
+async function openMedicationDetail(medicationId) {
+  selectMedication(medicationId);
+
+  try {
+    await getMedication(medicationId);
+  }
+  catch (error) {
+    setDetailError(error.message);
+  }
+}
 
 // ============================================================
 // PASSO 5 — clique em "Suspender" dentro do painel de detalhe
