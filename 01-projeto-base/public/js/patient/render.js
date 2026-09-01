@@ -21,18 +21,18 @@ function formatDate(isoDate) {
   return `${day}/${month}/${year}`;
 }
 
-export function renderPatientHeading(patient, container) {
+export function renderPatientHeading(patient) {
   const badgeModifier = patient.active ? "status-badge--active" : "status-badge--inactive";
   const badgeLabel = patient.active ? "Ativo" : "Inativo";
   
-  container.innerHTML = `
+  return `
   <h2 class="patient-summary__name">${escapeHtml(patient.name)}</h2>
   <span class="status-badge ${badgeModifier}">${badgeLabel}</span>
   `
 }
 
-export function renderPatientFields(patient, container) {
-  container.innerHTML = `
+export function renderPatientFields(patient) {
+  return `
     <div>
       <p class="patient-summary__field-label">Nascimento</p>
       <p class="patient-summary__field-value">${formatDate(patient.birthDate)} · ${patient.age} ano(s)</p>
@@ -48,10 +48,27 @@ export function renderPatientFields(patient, container) {
   `;
 }
 
-export function renderPatientSummary(patient, headingContainer, fieldsContainer, actionsContainer) {
-  actionsContainer.classList.remove('d-none');
-  renderPatientHeading(patient, headingContainer);
-  renderPatientFields(patient, fieldsContainer);
+export function renderPatientSummary(patient, container) {
+  container.classList.remove('patient-summary--plain');
+  container.hidden = false;
+  // <div id="patient-summary__status"></div>
+  container.innerHTML = `
+    <div class="patient-summary__body">
+      <div id="patient-summary__heading" class="patient-summary__heading">
+      ${renderPatientHeading(patient)}
+      </div>
+
+      <div id="patient-summary__fields" class="patient-summary__fields">
+      ${renderPatientFields(patient)}
+      </div>
+      </div>       
+
+      <div id="patient-summary__actions" class="patient-summary__actions">
+        <button type="button" class="action-button action-button--primary">
+          + Nova consulta
+        </button>
+        <button type="button" class="action-button action-button--ghost">Editar paciente</button>
+    </div>`
 }
 
 
@@ -102,26 +119,31 @@ function emptyEncountersTemplate() {
 }
 
 /** Mensagem quando a comunicação falhou. */
-export function renderErrorPatient(message, statusContainer, actionsContainer) {
-  statusContainer.innerHTML = `
+export function renderErrorPatient(message, container) {
+  container.classList.add('patient-summary--plain');
+  container.hidden = false;
+  container.innerHTML = `
     <div class="empty-state empty-state--error">
-      <p class="empty-state__title">Algo deu errado</p>
-      <p class="m-0">${escapeHtml(message)}</p>
+      <div>
+        <div class="empty-state__icon">!</div>
+        <p class="empty-state__title">Algo deu errado</p>
+        <p class="m-0">${escapeHtml(message)}</p>
+      </div>
     </div>
   `;
-  actionsContainer.classList.add('d-none');
 }
 
-export function renderLoading(statusContainer, actionsContainer) {
-  statusContainer.innerHTML = `
+export function renderLoading(container) {
+  container.classList.add('patient-summary--plain');
+  container.hidden = false;
+  container.innerHTML = `
     <div class="empty-state">
       <div class="spinner-border text-secondary" role="status"></div> 
       <p class="empty-state__title">Carregando…</p>
       <p class="m-0">Buscando informações do paciente.</p>
     </div>
-  `;
-  actionsContainer.classList.add('d-none');
-}
+      `;
+  }
 
 export function renderEncounterFormError(message, container) {
     container.innerHTML = `
