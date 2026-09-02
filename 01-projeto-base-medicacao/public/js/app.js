@@ -5,8 +5,8 @@
  * evento -> ação -> estado -> render -> tela. Sempre nesse sentido.
  * ============================================================
  */
-import { createMedication, getMedication, listMedications } from "./api.js";
-import { subscribe, getState, setMedications, setError, addMedication, selectMedication, setDetailError } from "./state.js";
+import { createMedication, getMedication, listMedications, removeMedication } from "./api.js";
+import { subscribe, getState, setMedications, setError, addMedication, selectMedication, setDetailError, removeMedicationFromState } from "./state.js";
 import { renderCounter, renderLoading, renderError, renderMedicationList, renderDetail } from "./render.js";
 
 const medicationListElement = document.querySelector("#medication-list");
@@ -98,7 +98,6 @@ saveButton.addEventListener("click", async () => {
 
 })
 
-
 // ============================================================
 // PASSO 4 — clique num cartão da lista (delegação de evento no <ul>)
 //   event.target.closest('[data-medication-id]') -> selectMedication(id)
@@ -127,3 +126,22 @@ async function openMedicationDetail(medicationId) {
 //   (delegação de evento no #detail-panel, já que ele é redesenhado)
 //   removeMedication(id) -> removeMedicationFromState(id)
 // ============================================================
+
+detailPanelElement.addEventListener("click", (event) => {
+  if (event.target.id === "remove-button") {
+    closeMedicationDetail();
+  }
+})
+
+async function closeMedicationDetail() {
+  const state = getState();
+  
+  try {
+    await removeMedication(state.selectedId);
+
+    removeMedicationFromState(state.selectedId);
+  }
+  catch (error) {
+    console.log(error.message);
+  }
+}

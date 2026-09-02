@@ -96,3 +96,9 @@ export function setDetailError(message) {
 // PASSO 5 — implemente removeMedicationFromState(id)
 //   filtra o array tirando o id removido, limpa a seleção, notify()
 // ============================================================
+
+export function removeMedicationFromState(id) {
+  state.medications = state.medications.filter((medication) => medication.id !== id);
+  state.selectedId = null;
+  notify();
+}
