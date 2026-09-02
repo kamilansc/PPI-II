@@ -97,6 +97,10 @@ export function renderDetail(state, container) {
   //       : `<ul class="encounter-list">${state.encounters.map(encounterItemTemplate).join("")}</ul>`;
 
   container.innerHTML = `
+    <button id="close-detail-button" class="medication-detail__close-button">
+      Fechar
+    </button>
+
     <h3 class="medication-detail__title">
       ${medication.medicationName}
     </h3>
