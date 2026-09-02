@@ -176,6 +176,19 @@ app.get("/api/medications/:id", (request, response) => {
 //   responda 204, sem corpo
 // ============================================================
 
+app.delete("/api/medications/:id", (request, response) => {
+  const row = db
+    .prepare("DELETE FROM medication_orders WHERE ID = ?")
+    .run(request.params.id);
+
+  if (row.changes === 0) {
+    return response.status(404).json({
+      error: "Não é possível deletar. Prescrição não existe."
+    });
+  }
+  response.status(204).send();
+})
+
 app.listen(PORT, () => {
   console.log(`Painel de Medicacao no ar em http://localhost:${PORT}`);
 });

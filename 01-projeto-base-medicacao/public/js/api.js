@@ -67,3 +67,15 @@ export async function getMedication(id) {
 //   method: "DELETE"
 //   sucesso = response.status === 204 (sem corpo, não dá pra fazer .json())
 // ============================================================
+export async function removeMedication(id) {
+  const response = await fetch(`${MEDICATIONS_URL}/${id}`, {
+    method: "DELETE"
+  });
+
+  if (response.status !== 204) {
+    const body = await response.json();
+    throw new Error (body.error);
+  }
+
+  return;
+}
