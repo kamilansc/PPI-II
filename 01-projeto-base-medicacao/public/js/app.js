@@ -6,7 +6,7 @@
  * ============================================================
  */
 import { createMedication, getMedication, listMedications, removeMedication } from "./api.js";
-import { subscribe, getState, setMedications, setError, addMedication, selectMedication, setDetailError, removeMedicationFromState } from "./state.js";
+import { subscribe, getState, setMedications, setError, addMedication, selectMedication, setDetailError, removeMedicationFromState, clearSelection } from "./state.js";
 import { renderCounter, renderLoading, renderError, renderMedicationList, renderDetail } from "./render.js";
 
 const medicationListElement = document.querySelector("#medication-list");
@@ -145,3 +145,7 @@ async function closeMedicationDetail() {
     console.log(error.message);
   }
 }
+
+detailPanelElement.addEventListener("click", () => {
+  clearSelection();
+})

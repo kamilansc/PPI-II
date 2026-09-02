@@ -44,6 +44,7 @@ body {
 
 /* --- painel de detalhe --- */
 .detail-panel {
+  position: relative;  /* necessário para posicionar o botão de fechar */
   background: var(--cor-superficie);
   border: 1px solid var(--cor-borda);
   border-radius: var(--raio-lg);
@@ -51,6 +52,33 @@ body {
   padding: var(--espaco-5) var(--espaco-6);
   margin-top: var(--espaco-5);
   margin-bottom: var(--espaco-5);
+}
+
+.medication-detail__close-button {
+  position: absolute;
+  top: var(--espaco-4);
+  right: var(--espaco-4);
+
+  padding: var(--espaco-2) var(--espaco-3);
+  
+  border: none;
+  border-radius: var(--raio-sm);
+
+  background: transparent;
+  color: var(--cor-texto-suave);
+
+  font-family: var(--fonte-base);
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.medication-detail__close-button:hover {
+  background-color: var(--cor-borda);
+  color: var(--cor-texto);
 }
 
 .medication-detail__title {
