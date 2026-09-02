@@ -29,8 +29,8 @@
   <main class="container app-main">
     <a class="breadcrumb-link" href="./index.html">&larr; Voltar ao Mini-Prontuário</a>
     
-    <section id="patient-summary" class="patient-summary" aria-label="Dados do paciente">
-      <div class="patient-summary__body">
+    <section id="patient-summary" class="patient-summary" hidden aria-label="Dados do paciente">
+      <!-- <div class="patient-summary__body">
         <div id="patient-summary__status"></div>
         
         <div id="patient-summary__heading" class="patient-summary__heading"></div>
@@ -44,12 +44,12 @@
             + Nova consulta
           </button>
           <button type="button" class="action-button action-button--ghost">Editar paciente</button>
-      </div>
+      </div> -->
     </section>
 
     <section aria-label="Atendimentos do paciente">
       <div class="section-heading">
-        <h3 id="section-heading__title" class="section-heading__title">Atendimentos</h3>
+        <h3 id="section-heading__title" class="section-heading__title" hidden>Atendimentos</h3>
         <p class="section-heading__count"></p>
       </div>
 

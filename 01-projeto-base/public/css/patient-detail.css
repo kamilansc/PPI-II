@@ -41,6 +41,18 @@
   gap: var(--espaco-5);
 }
 
+/* ------------------------------------------------------------
+   MODIFICADOR: patient-summary--plain
+   Usado quando o conteúdo é um .empty-state (loading/erro) —
+   remove a casca de card pra não duplicar com a do empty-state.
+   ------------------------------------------------------------ */
+.patient-summary--plain {
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
 @media (min-width: 768px) {
   .patient-summary {
     flex-direction: row;       /* tablet+: nome/campos à esquerda, ações à direita */

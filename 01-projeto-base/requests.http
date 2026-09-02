@@ -82,6 +82,16 @@ Content-Type: application/json
   "notes": "Orientada hidratacao e retorno em 7 dias."
 }
 
+###
+POST {{host}}/api/patients/1/encounters
+Content-Type: application/json
+
+{
+  "startedAt": "",
+  "chiefComplaint": "",
+  "notes": ""
+}
+
 ### 12. FALHA PROPOSITAL: sem chiefComplaint  -> esperado 400
 POST {{host}}/api/patients/1/encounters
 Content-Type: application/json

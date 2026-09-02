@@ -223,7 +223,7 @@ function validatePatientExist (id: number): string | null {
 }
 
 app.get("/api/patients/:id/encounters", (request, response) => {
-  const result =  validatePatientExist(Number(request.params.id))
+  const result = validatePatientExist(Number(request.params.id))
   if (result != null) {
     return response.status(404).json({
       error: `Falha ao buscar os atendimentos: ${result}`
