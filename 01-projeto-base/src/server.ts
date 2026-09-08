@@ -11,6 +11,8 @@
  */
 import express, { response } from "express";
 import { db } from "./database";
+import { patientsRouter } from "./routes/patients.routes";
+import { encountersRouter } from "./routes/encounters.routes";
 
 
 const app = express();
@@ -38,6 +40,10 @@ app.use(express.static("public"));
 app.get("/api/health", (_request, response) => {
   response.json({ status: "ok" });
 });
+
+app.use("/api/patients", patientsRouter);
+
+app.use("/api/patients/:id/encounters", encountersRouter);
 
 // ============================================================
 // TODO 1 (Encontro 2, Pratica 1)
@@ -89,22 +95,22 @@ app.get("/api/health", (_request, response) => {
 //   - se invalido:  400  { "error": "mensagem util" }
 //   - se valido:    201  com o paciente criado
 // ============================================================
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+// const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-function isBlank(value: unknown) {
-  return typeof value !== 'string' || value.trim() === '';
-}
+// function isBlank(value: unknown) {
+//   return typeof value !== 'string' || value.trim() === '';
+// }
 
-function validationPatientInput(body: any): string | null {
-  if (isBlank(body?.name)) {
-    return 'O campo nome é obrigatório.';
-  }
-  if (isBlank(body?.birthDate) || !ISO_DATE.test(body.birthDate)) {
-    return 'O campo birthdate deve ser no formato AAAA-MM-DD';
-  }
+// function validationPatientInput(body: any): string | null {
+//   if (isBlank(body?.name)) {
+//     return 'O campo nome é obrigatório.';
+//   }
+//   if (isBlank(body?.birthDate) || !ISO_DATE.test(body.birthDate)) {
+//     return 'O campo birthdate deve ser no formato AAAA-MM-DD';
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
 // app.post ('/api/patients', (request, response) => {
 //   const validacao = validationPatientInput(request.body);
@@ -128,152 +134,152 @@ function validationPatientInput(body: any): string | null {
 //   const rows = db.prepare("SELECT ... FROM patients ORDER BY name").all();
 // E crie GET /api/patients/:id devolvendo 404 quando nao existir.
 // ============================================================
-function toPatientJson (row: any) {
-  return {
-    id: row.id,
-    name: row.name,
-    birthDate: row.birth_date,
-    nationalId: row.national_id,
-    active: row.active === 1
-  };
-}
+// function toPatientJson (row: any) {
+//   return {
+//     id: row.id,
+//     name: row.name,
+//     birthDate: row.birth_date,
+//     nationalId: row.national_id,
+//     active: row.active === 1
+//   };
+// }
 
-function toEncounterJson (row: any) {
-  return {
-    id: row.id,
-    patientId: row.patient_id,
-    startedAt: row.started_at,
-    chiefComplaint: row.chief_complaint,
-    notes: row.notes
-  };
-}
+// function toEncounterJson (row: any) {
+//   return {
+//     id: row.id,
+//     patientId: row.patient_id,
+//     startedAt: row.started_at,
+//     chiefComplaint: row.chief_complaint,
+//     notes: row.notes
+//   };
+// }
 
-app.get("/api/patients", (request, response) => {
-  const rows = db.prepare("SELECT * FROM patients").all();
+// app.get("/api/patients", (request, response) => {
+//   const rows = db.prepare("SELECT * FROM patients").all();
 
-  const patients = rows.map(row => toPatientJson(row));
-  if (request.query.active === 'true'){
-    return response.json(patients.filter((patient) => {
-      return patient.active;
-    }))
-  }
-  else if (request.query.active === 'false') {
-    return response.json(patients.filter((patient) => {
-      return patient.active === false;
-    }))
-  }
+//   const patients = rows.map(row => toPatientJson(row));
+//   if (request.query.active === 'true'){
+//     return response.json(patients.filter((patient) => {
+//       return patient.active;
+//     }))
+//   }
+//   else if (request.query.active === 'false') {
+//     return response.json(patients.filter((patient) => {
+//       return patient.active === false;
+//     }))
+//   }
 
-  response.json(patients);
+//   response.json(patients);
 
-})
+// })
 
-app.get("/api/patients/:id", (request, response) => {
-  const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(request.params.id);
+// app.get("/api/patients/:id", (request, response) => {
+//   const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(request.params.id);
 
-  if (row === undefined) {
-    return response.status(404).json({
-      error: "Paciente não encontrado"
-    })
-  }
+//   if (row === undefined) {
+//     return response.status(404).json({
+//       error: "Paciente não encontrado"
+//     })
+//   }
 
-  const paciente = toPatientJson(row);
+//   const paciente = toPatientJson(row);
 
-  response.json(paciente);
-})
+//   response.json(paciente);
+// })
 
-app.post ('/api/patients', (request, response) => {
-  const validation = validationPatientInput(request.body);
+// app.post ('/api/patients', (request, response) => {
+//   const validation = validationPatientInput(request.body);
 
-  if (validation != null) {
-    return response.status(400).json({
-      error: validation
-    });
-  }
+//   if (validation != null) {
+//     return response.status(400).json({
+//       error: validation
+//     });
+//   }
 
-  const duplicate = db.prepare("SELECT id FROM patients WHERE national_id = ?").get(request.body.nationalId.trim());
-  if (duplicate) {
-    return response.status(409).json({
-      error: "Já existe um paciente com este CNS."
-    })
-  }
+//   const duplicate = db.prepare("SELECT id FROM patients WHERE national_id = ?").get(request.body.nationalId.trim());
+//   if (duplicate) {
+//     return response.status(409).json({
+//       error: "Já existe um paciente com este CNS."
+//     })
+//   }
   
-  const result = db.prepare("INSERT INTO patients (name, birth_date, national_id, active) VALUES (?, ?, ?, ?)").run(
-    request.body.name, 
-    request.body.birthDate, 
-    request.body.nationalId, 
-    request.body.active ? 1 : 0
-  )
+//   const result = db.prepare("INSERT INTO patients (name, birth_date, national_id, active) VALUES (?, ?, ?, ?)").run(
+//     request.body.name, 
+//     request.body.birthDate, 
+//     request.body.nationalId, 
+//     request.body.active ? 1 : 0
+//   )
 
-  request.body.id = result.lastInsertRowid;
+//   request.body.id = result.lastInsertRowid;
 
-  response.status(201).json(request.body);
-})
+//   response.status(201).json(request.body);
+// })
 
 // ============================================================
 // ROTAS DE ENCOUNTERS
 // ============================================================
-function validatePatientExist (id: number): string | null {
-  const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(id);
+// function validatePatientExist (id: number): string | null {
+//   const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(id);
   
-  if (row === undefined) {
-    return "Paciente não encontrado";
-  }
+//   if (row === undefined) {
+//     return "Paciente não encontrado";
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
-app.get("/api/patients/:id/encounters", (request, response) => {
-  const result = validatePatientExist(Number(request.params.id))
-  if (result != null) {
-    return response.status(404).json({
-      error: `Falha ao buscar os atendimentos: ${result}`
-    })
-  }
+// app.get("/api/patients/:id/encounters", (request, response) => {
+//   const result = validatePatientExist(Number(request.params.id))
+//   if (result != null) {
+//     return response.status(404).json({
+//       error: `Falha ao buscar os atendimentos: ${result}`
+//     })
+//   }
 
-  const rows = db.prepare("SELECT * FROM encounters WHERE patient_id = ? ORDER BY started_at DESC").all(request.params.id);
-  const encounters = rows.map(row => toEncounterJson(row));
+//   const rows = db.prepare("SELECT * FROM encounters WHERE patient_id = ? ORDER BY started_at DESC").all(request.params.id);
+//   const encounters = rows.map(row => toEncounterJson(row));
 
-  response.json(encounters);
-})
+//   response.json(encounters);
+// })
 
-const ISO_DATE_HOUR = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
-function validationEncounterInput(body: any): string | null {
-  if (isBlank(body?.chiefComplaint)) {
-    return 'O preenchimento do campo de queixas e sintomas é obrigatório.'
-  }
-  else if (isBlank(body?.startedAt) || !ISO_DATE_HOUR.test(body.startedAt)) {
-    return 'O campo de horário de início da consulta deve ter o formato AAAA-MM-DDTHH:MM.'
-  }
+// const ISO_DATE_HOUR = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+// function validationEncounterInput(body: any): string | null {
+//   if (isBlank(body?.chiefComplaint)) {
+//     return 'O preenchimento do campo de queixas e sintomas é obrigatório.'
+//   }
+//   else if (isBlank(body?.startedAt) || !ISO_DATE_HOUR.test(body.startedAt)) {
+//     return 'O campo de horário de início da consulta deve ter o formato AAAA-MM-DDTHH:MM.'
+//   }
 
-  return null;
-}
+//   return null;
+// }
 
-app.post("/api/patients/:id/encounters", (request, response) => {
-  const validationError = validationEncounterInput(request.body);
-  if (validationError != null) {
-    return response.status(400).json({
-      error: validationError
-    })
-  }
+// app.post("/api/patients/:id/encounters", (request, response) => {
+//   const validationError = validationEncounterInput(request.body);
+//   if (validationError != null) {
+//     return response.status(400).json({
+//       error: validationError
+//     })
+//   }
 
-  const pacientError = validatePatientExist(Number(request.params.id));
-  if (pacientError != null) {
-    return response.status(404).json({
-      error: pacientError
-    })
-  }
+//   const pacientError = validatePatientExist(Number(request.params.id));
+//   if (pacientError != null) {
+//     return response.status(404).json({
+//       error: pacientError
+//     })
+//   }
 
-  const result = db.prepare("INSERT INTO encounters (patient_id, started_at, chief_complaint, notes) VALUES (?, ?, ?, ?)").run(
-    request.params.id,
-    request.body.startedAt,
-    request.body.chiefComplaint,
-    request.body.notes
-  )
+//   const result = db.prepare("INSERT INTO encounters (patient_id, started_at, chief_complaint, notes) VALUES (?, ?, ?, ?)").run(
+//     request.params.id,
+//     request.body.startedAt,
+//     request.body.chiefComplaint,
+//     request.body.notes
+//   )
 
-  const encounter = db.prepare("SELECT * FROM encounters WHERE id = ?").get(result.lastInsertRowid);
+//   const encounter = db.prepare("SELECT * FROM encounters WHERE id = ?").get(result.lastInsertRowid);
 
-  response.json(toEncounterJson(encounter));
-})
+//   response.json(toEncounterJson(encounter));
+// })
 
 // ------------------------------------------------------------
 app.listen(PORT, () => {
