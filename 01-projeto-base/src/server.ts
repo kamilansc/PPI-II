@@ -1,19 +1,6 @@
-/**
- * ============================================================
- * Mini-Prontuario - Servidor HTTP
- * ============================================================
- * Esta semana o servidor e PROPOSITALMENTE simples:
- * um unico arquivo, sem camadas, sem arquitetura.
- * O objetivo e enxergar o HTTP acontecendo.
- *
- * A separacao em camadas chega na Semana 03. Ate la, o que
- * queremos e que voce saiba exatamente o que cada linha faz.
- */
-import express, { response } from "express";
-import { db } from "./database";
+import express from "express";
 import { patientsRouter } from "./routes/patients.routes";
 import { encountersRouter } from "./routes/encounters.routes";
-
 
 const app = express();
 const PORT = 3000;
@@ -44,6 +31,12 @@ app.get("/api/health", (_request, response) => {
 app.use("/api/patients", patientsRouter);
 
 app.use("/api/patients/:id/encounters", encountersRouter);
+
+
+// ------------------------------------------------------------
+app.listen(PORT, () => {
+  console.log(`Mini-Prontuario no ar em http://localhost:${PORT}`);
+});
 
 // ============================================================
 // TODO 1 (Encontro 2, Pratica 1)
@@ -281,7 +274,3 @@ app.use("/api/patients/:id/encounters", encountersRouter);
 //   response.json(toEncounterJson(encounter));
 // })
 
-// ------------------------------------------------------------
-app.listen(PORT, () => {
-  console.log(`Mini-Prontuario no ar em http://localhost:${PORT}`);
-});
