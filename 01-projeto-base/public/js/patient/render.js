@@ -51,7 +51,6 @@ export function renderPatientFields(patient) {
 export function renderPatientSummary(patient, container) {
   container.classList.remove('patient-summary--plain');
   container.hidden = false;
-  // <div id="patient-summary__status"></div>
   container.innerHTML = `
     <div class="patient-summary__body">
       <div id="patient-summary__heading" class="patient-summary__heading">
@@ -61,14 +60,61 @@ export function renderPatientSummary(patient, container) {
       <div id="patient-summary__fields" class="patient-summary__fields">
       ${renderPatientFields(patient)}
       </div>
-      </div>       
+    </div>       
 
-      <div id="patient-summary__actions" class="patient-summary__actions">
-        <button type="button" class="action-button action-button--primary">
-          + Nova consulta
-        </button>
-        <button type="button" class="action-button action-button--ghost">Editar paciente</button>
-    </div>`
+    <div id="patient-summary__actions" class="patient-summary__actions">
+      <button type="button" id="patient-summary__new-encounter-button" class="action-button action-button--primary">
+        + Nova consulta
+      </button>
+      <button type="button" class="action-button action-button--ghost">Editar paciente</button>
+    </div>
+  `
+}
+
+/** Desenha os campos de preenchimento de uma nova consulta dentro do `container`. */
+export function renderEncounterForm(container, formOpen) {
+  if (!formOpen) {
+    container.hidden = true;
+    container.innerHTML = "";
+    return;
+  }
+
+  container.hidden = false;
+  container.innerHTML = `
+    <div class="encounter-form__group">
+      <div class="encounter-form__field">
+        <label for="encounter-started-at" class="encounter-form__label">
+          Data e hora
+        </label>
+        <input type="datetime-local" id="encounter-started-at" class="encounter-form__input"/>
+      </div>
+
+      <div class="encounter-form__field">
+        <label for="encounter-chief-complaint" class="encounter-form__label">
+          Queixa principal
+        </label>
+        <input type="text" id="encounter-chief-complaint" class="encounter-form__input" placeholder="Ex.: Dor de cabeça há 2 dias"/>
+      </div>
+    </div>
+
+    <div class="encounter-form__field">
+      <label for="encounter-notes" class="encounter-form__label">
+        Observações
+      </label>
+      <textarea id="encounter-notes" class="encounter-form__textarea" rows="3" placeholder="Observações adicionais (opcional)"></textarea>
+    </div>
+
+    <div class="encounter-form__actions">
+      <button type="button" id="encounter-save-button" class="action-button action-button--primary">
+        Salvar
+      </button>
+      <button type="button" id="encounter-cancel-button" class="action-button action-button--ghost">
+        Cancelar
+      </button>
+    </div>
+    
+    <p id="encounter-form__feedback" class="encounter-form__feedback" role="alert"></p>
+  `;
 }
 
 

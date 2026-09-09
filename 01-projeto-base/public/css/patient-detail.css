@@ -34,7 +34,7 @@
   border-radius: var(--raio-md);
   box-shadow: var(--sombra-1);
   padding: var(--espaco-5);
-  margin-bottom: var(--espaco-6);
+  margin-bottom: var(--espaco-5);
 
   display: flex;
   flex-direction: column;      /* celular: empilhado */
@@ -167,6 +167,142 @@
   color: var(--cor-texto);
 }
 
+/* ------------------------------------------------------------
+   BLOCO: new-encounter-form
+   Formulário de adição de uma nova consulta.
+   ------------------------------------------------------------ */
+.new-encounter-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-4);
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-lg);
+  box-shadow: var(--sombra-2);
+  padding: var(--espaco-7) var(--espaco-5) var(--espaco-5) var(--espaco-4);
+  margin-top: var(--espaco-5);
+  margin-bottom: var(--espaco-5);
+}
+
+.encounter-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+}
+
+.encounter-form__group {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--espaco-4);
+}
+
+.encounter-form__label {
+  color: var(--cor-texto-suave);
+  font-family: var(--fonte-base);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.encounter-form__input,
+.encounter-form__textarea {
+  color: var(--cor-texto);
+  font-family: var(--fonte-base);
+  font-size: 1rem;
+  background: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-2) var(--espaco-3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.encounter-form__textarea {
+  font-family: inherit;
+  resize: vertical;
+  min-height: calc(var(--espaco-7) * 1.5);
+}
+
+.encounter-form__input:focus,
+.encounter-form__textarea:focus {
+  outline: none;
+  border-color: var(--cor-marca);
+  box-shadow: 0 0 0 3px var(--cor-marca-suave);
+}
+
+.encounter-form__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--espaco-6);
+  padding-top: var(--espaco-4);
+  border-top: 1px solid var(--cor-borda);
+}
+
+.action-button {
+  border: 1px solid transparent;
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-2) var(--espaco-4);
+  color: var(--cor-texto);
+  font-family: var(--fonte-base);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.action-button--ghost {
+  background-color: var(--cor-superficie);
+  border-color: var(--cor-borda);
+  color: var(--cor-texto);
+}
+
+.action-button--ghost:hover {
+  background-color: var(--cor-fundo);
+}
+
+/* ------------------------------------------------------------
+   BLOCO: encounter-form__feedback
+   Mensagem inline de erro ou sucesso ao salvar/validar o
+   formulário. Mais leve que .empty-state--error (que substitui
+   uma seção inteira) — aqui é só um aviso pontual dentro do
+   próprio form.
+   ------------------------------------------------------------ */
+.encounter-form__feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espaco-2);
+  border-radius: var(--raio-sm);
+  padding: var(--espaco-3) var(--espaco-4);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.encounter-form__feedback::before {
+  content: "";
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 0.35em;
+  border-radius: 50%;
+}
+
+.encounter-form__feedback--error {
+  background-color: var(--cor-alerta-suave);
+  color: var(--cor-alerta-escura);
+}
+ 
+.encounter-form__feedback--error::before {
+  background-color: var(--cor-alerta-escura);
+}
+ 
+.encounter-form__feedback--success {
+  background-color: var(--cor-marca-suave);
+  color: var(--cor-marca-escura);
+}
+ 
+.encounter-form__feedback--success::before {
+  background-color: var(--cor-marca-escura);
+}
 /* ------------------------------------------------------------
    BLOCO: section-heading
    Título de seção reutilizável (ex.: "Atendimentos").

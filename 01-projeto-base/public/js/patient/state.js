@@ -2,6 +2,9 @@ let state = {
     patient: null,
     encounters: [],
     isLoading: true,
+
+    isEncounterFormOpen: false,
+
     errorMessagePatient: null,
     errorMessageEncounters: null,
 }
@@ -15,8 +18,6 @@ const listeners = [];
 export function subscribe(listener) {
   listeners.push(listener);
 }
-
-
 
 export function getState() {
   return {
@@ -64,5 +65,21 @@ export function setPatient (patient) {
 export function setEncounters (encounters) {
   state.encounters = encounters;
   state.isLoading = false;
+  notify();
+}
+
+export function addEncounter (encounter) {
+  state.encounters = [encounter, ...state.encounters].sort((a, b) => 
+    b.startedAt.localeCompare(a.startedAt))
+  notify();
+}
+
+export function openEncounterForm() {
+  state.isEncounterFormOpen = true;
+  notify();
+}
+
+export function closeEncounterForm() {
+  state.isEncounterFormOpen = false;
   notify();
 }
