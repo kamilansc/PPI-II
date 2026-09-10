@@ -42,30 +42,14 @@ export const patientsController = {
             return res.status(400).json({ error: "O ID do paciente é inválido" });
         }
 
-        try {
-            const patient = patientsService.getById(patientId);
-            res.json(patient);
-        }
-        catch (error) {
-            if (error instanceof Error) {
-                res.status(404).json({ error: error.message });
-            }
-        }
+
+        const patient = patientsService.getById(patientId);
+        res.json(patient);   
     },
 
     create(req: Request, res: Response) {
-        try {
-            const newPatient = patientsService.create(req.body);
-            res.status(201).json(newPatient);
-        }
-        catch (error){
-            if (error instanceof Error) {
-                if (error.message === 'Já existe um paciente com este CNS.') {
-                    res.status(409).json({ error: error.message })
-                }
-                else res.status(400).json({ error: error.message })
-            }
-        }
+        const newPatient = patientsService.create(req.body);
+        res.status(201).json(newPatient);
     }
 }
 

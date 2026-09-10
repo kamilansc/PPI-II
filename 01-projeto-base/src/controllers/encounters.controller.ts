@@ -17,7 +17,7 @@
  *   };
  * ============================================================
  */
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { encountersService } from "../services/encounters.service"
 
 
@@ -29,15 +29,8 @@ export const encountersController = {
             return res.status(400).json({ error: "O ID do paciente é inválido" })
         }
 
-        try {
-            const encounters = encountersService.list(patientId);
-            res.status(200).json(encounters);
-        }
-        catch (error) {
-            if (error instanceof Error) {
-                res.status(400).json({ error: error.message });
-            }
-        }
+        const encounters = encountersService.list(patientId);
+        res.status(200).json(encounters);
     },
 
     create(req: Request, res: Response) {
@@ -46,17 +39,7 @@ export const encountersController = {
             return res.status(400).json({ error: "O ID do paciente é inválido" })
         }
 
-        try {
-            const encounter = encountersService.create(patientId, req.body);
-            res.status(201).json(encounter);
-        }
-        catch (error) {
-            if (error instanceof Error) {
-                if (error.message === "Paciente não encontrado") {
-                    res.status(404).json({ error: error.message })
-                }
-                else res.status(400).json({ error: error.message })
-            }
-        }
+        const encounter = encountersService.create(patientId, req.body);
+        res.status(201).json(encounter);
     }
 }

@@ -30,6 +30,7 @@
  * ============================================================
  */
 import { db } from "../database";
+import { BadRequestError, ConflictError, NotFoundError } from "../errors/HttpError";
 
 type PatientRow = {
   id: number;
@@ -70,54 +71,54 @@ function validatePatientInput(body: any): string | null {
 }
 
 export const patientsService = {
-    list() {
-        const rows = db
-        .prepare("SELECT id, name, birth_date, national_id, active FROM patients")
-        .all() as PatientRow[];
-        
-        const patients = rows.map(row => toPatientJson(row));
-
-        return patients;
-    },
-
-    getById(id: string) {
-        const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(id);
+  list() {
+      const rows = db
+      .prepare("SELECT id, name, birth_date, national_id, active FROM patients")
+      .all() as PatientRow[];
       
-        if (row === undefined) {
-          throw new Error ("Paciente não encontrado")
-        }
-      
-        return toPatientJson(row);
-    },
+      const patients = rows.map(row => toPatientJson(row));
 
-    create(data: { name: string; birthDate: string; nationalId: string, active: boolean} ) {
-      const validation = validatePatientInput(data);
+      return patients;
+  },
+
+  getById(id: string) {
+      const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(id);
     
-      if (validation != null) {
-        throw new Error(validation)
+      if (row === undefined) {
+        throw new NotFoundError("Paciente não encontrado!")
       }
+    
+      return toPatientJson(row);
+  },
 
-      const duplicate = db
-      .prepare("SELECT id FROM patients WHERE national_id = ?")
-      .get(data.nationalId.trim());
-      
-      if (duplicate) {
-        throw new Error("Já existe um paciente com este CNS.")
-      }
-      
-      const result = db.prepare("INSERT INTO patients (name, birth_date, national_id, active) VALUES (?, ?, ?, ?)").run(
-        data.name, 
-        data.birthDate, 
-        data.nationalId, 
-        data.active ? 1 : 0
-      )
-
-      const created = db
-      .prepare("SELECT id, name, birth_date, national_id, active FROM patients WHERE id = ?")
-      .get(result.lastInsertRowid);
-      
-      return toPatientJson(created);
+  create(data: { name: string; birthDate: string; nationalId: string, active: boolean} ) {
+    const validation = validatePatientInput(data);
+  
+    if (validation != null) {
+      throw new BadRequestError(validation)
     }
+
+    const duplicate = db
+    .prepare("SELECT id FROM patients WHERE national_id = ?")
+    .get(data.nationalId.trim());
+    
+    if (duplicate) {
+      throw new ConflictError("Já existe um paciente com este CNS!")
+    }
+    
+    const result = db.prepare("INSERT INTO patients (name, birth_date, national_id, active) VALUES (?, ?, ?, ?)").run(
+      data.name, 
+      data.birthDate, 
+      data.nationalId, 
+      data.active ? 1 : 0
+    )
+
+    const created = db
+    .prepare("SELECT id, name, birth_date, national_id, active FROM patients WHERE id = ?")
+    .get(result.lastInsertRowid);
+    
+    return toPatientJson(created);
+  }
 }
 
 
