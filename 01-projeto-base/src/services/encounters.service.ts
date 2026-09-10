@@ -14,6 +14,7 @@
  */
 
 import { db } from "../database";
+import { BadRequestError, NotFoundError } from "../errors/HttpError";
 
 function toEncounterJson (row: any) {
   return {
@@ -29,7 +30,7 @@ function validatePatientExist (id: number): string | null {
   const row = db.prepare("SELECT * FROM patients WHERE id = ?").get(id);
   
   if (row === undefined) {
-    return "Paciente não encontrado";
+    return "Paciente não encontrado!";
   }
 
   return null;
@@ -53,45 +54,45 @@ function validateEncounterInput(body: any): string | null {
 }
 
 export const encountersService = {
-    list(patientId: string) {
-        const result = validatePatientExist(Number(patientId));
-        if (result != null) {
-          throw new Error (`Falha ao buscar os atendimentos: ${result}`);
-        }
-        
-        const rows = db
-        .prepare("SELECT * FROM encounters WHERE patient_id = ? ORDER BY started_at DESC")
-        .all(patientId);
-        
-        const encounters = rows.map(row => toEncounterJson(row));
-        
-        return encounters;
-    },
-    
-    create(patientId: string, data: { startedAt: string, chiefComplaint: string, notes: string }){
-        const validationError = validateEncounterInput(data);
-        if (validationError != null) {
-           throw new Error (validationError)
-        }
-        
-        const pacientError = validatePatientExist(Number(patientId));
-        if (pacientError != null) {
-            throw new Error (pacientError)
-        }
-        
-        const result = db
-        .prepare("INSERT INTO encounters (patient_id, started_at, chief_complaint, notes) VALUES (?, ?, ?, ?)")
-        .run(
-        patientId,
-        data.startedAt,
-        data.chiefComplaint.trim(),
-        isBlank(data.notes) ? null : data.notes.trim()
-        )
-        
-        const encounter = db
-        .prepare("SELECT * FROM encounters WHERE id = ?")
-        .get(result.lastInsertRowid);
-        
-        return toEncounterJson(encounter);
+  list(patientId: string) {
+    const result = validatePatientExist(Number(patientId));
+    if (result != null) {
+      throw new NotFoundError(`Falha ao buscar os atendimentos: ${result}`);
     }
+      
+    const rows = db
+    .prepare("SELECT * FROM encounters WHERE patient_id = ? ORDER BY started_at DESC")
+    .all(patientId);
+    
+    const encounters = rows.map(row => toEncounterJson(row));
+    
+    return encounters;
+  },
+  
+  create(patientId: string, data: { startedAt: string, chiefComplaint: string, notes: string }){
+      const validationError = validateEncounterInput(data);
+      if (validationError != null) {
+          throw new BadRequestError(validationError)
+      }
+      
+      const pacientError = validatePatientExist(Number(patientId));
+      if (pacientError != null) {
+          throw new NotFoundError(pacientError);
+      }
+      
+      const result = db
+      .prepare("INSERT INTO encounters (patient_id, started_at, chief_complaint, notes) VALUES (?, ?, ?, ?)")
+      .run(
+      patientId,
+      data.startedAt,
+      data.chiefComplaint.trim(),
+      isBlank(data.notes) ? null : data.notes.trim()
+      )
+      
+      const encounter = db
+      .prepare("SELECT * FROM encounters WHERE id = ?")
+      .get(result.lastInsertRowid);
+      
+      return toEncounterJson(encounter);
+  }
 }
