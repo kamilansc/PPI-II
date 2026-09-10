@@ -30,7 +30,7 @@
  * ============================================================
  */
 import { db } from "../database";
-import { BadRequestError, ConflictError, NotFoundError } from "../errors/HttpError";
+import { ConflictError, NotFoundError } from "../errors/HttpError";
 
 type PatientRow = {
   id: number;
@@ -48,26 +48,6 @@ function toPatientJson (row: any) {
     nationalId: row.national_id,
     active: row.active === 1
   };
-}
-
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-
-function isBlank(value: unknown) {
-  return typeof value !== 'string' || value.trim() === '';
-}
-
-function validatePatientInput(body: any): string | null {
-  if (isBlank(body?.name)) {
-    return "O campo 'nome' é obrigatório.";
-  }
-  if (isBlank(body?.birthDate) || !ISO_DATE.test(body.birthDate)) {
-    return "O campo 'data de nascimento' é obrigatório e deve estar no formato AAAA-MM-DD";
-  }
-  if (isBlank(body?.nationalId)) {
-    return "O campo 'cartão do SUS' é obrigatório.";
-  }
-
-  return null;
 }
 
 export const patientsService = {
@@ -92,11 +72,11 @@ export const patientsService = {
   },
 
   create(data: { name: string; birthDate: string; nationalId: string, active: boolean} ) {
-    const validation = validatePatientInput(data);
+    // const validation = validatePatientInput(data);
   
-    if (validation != null) {
-      throw new BadRequestError(validation)
-    }
+    // if (validation != null) {
+    //   throw new BadRequestError(validation)
+    // }
 
     const duplicate = db
     .prepare("SELECT id FROM patients WHERE national_id = ?")
@@ -121,9 +101,6 @@ export const patientsService = {
   }
 }
 
-
-
-
 /**
  * ============================================================
  * TODO 13 (Encontro 2, continuacao) -- Service de upload
@@ -135,3 +112,24 @@ export const patientsService = {
  *   - devolve o paciente atualizado (toPatientJson)
  * ============================================================
  */
+
+
+// const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+// function isBlank(value: unknown) {
+//   return typeof value !== 'string' || value.trim() === '';
+// }
+
+// function validatePatientInput(body: any): string | null {
+//   if (isBlank(body?.name)) {
+//     return "O campo 'nome' é obrigatório.";
+//   }
+//   if (isBlank(body?.birthDate) || !ISO_DATE.test(body.birthDate)) {
+//     return "O campo 'data de nascimento' é obrigatório e deve estar no formato AAAA-MM-DD";
+//   }
+//   if (isBlank(body?.nationalId)) {
+//     return "O campo 'cartão do SUS' é obrigatório.";
+//   }
+
+//   return null;
+// }
