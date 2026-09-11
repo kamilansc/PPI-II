@@ -3,3 +3,5 @@ database/*.db
 database/*.db-journal
 .DS_Store
 .vscode/
+uploads/*
+!uploads/.gitkeep
