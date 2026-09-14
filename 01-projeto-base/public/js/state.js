@@ -11,21 +11,18 @@
  * arquivo ainda faria sentido? Tem que fazer.
  * ============================================================
  */
-
-/**
- * O estado. Uma única fonte da verdade.
- *
- * Repare no que NÃO está aqui: a lista filtrada.
- * A lista filtrada é CONSEQUÊNCIA de `patients` + `searchTerm`.
- * Guardar consequência no estado é criar duas verdades que
- * um dia vão discordar entre si.
- */
-const state = {
+export const state = {
   patients: [],
   searchTerm: "",
   onlyActive: false,
   isLoading: true,
   errorMessage: null,
+
+  previewFilename: null,
+  previewUrl: null,
+
+  formError: null,
+  fieldErrors: {},
 };
 
 /** Quem quer ser avisado quando o estado mudar. */
@@ -133,5 +130,23 @@ export function setOnlyActive(onlyActive) {
 export function setError(message) {
   state.errorMessage = message;
   state.isLoading = false;
+  notify();
+}
+
+export function setFormError(message, fieldErrors = {}) {
+  state.formError = message;
+  state.fieldErrors = fieldErrors;
+  notify();
+}
+
+export function setPreviewUrl(url, filename) {
+  state.previewUrl = url;
+  state.previewFilename = filename;
+  notify();
+}
+
+export function addPatient (patient) {
+  state.patients = [patient, ...state.patients].sort((a, b) => 
+    a.name.localeCompare(b.name, "pt-BR"))
   notify();
 }

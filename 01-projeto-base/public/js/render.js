@@ -13,6 +13,34 @@
  * ============================================================
  */
 
+export function renderFormError(formError, fieldErrors, container) {
+  container.innerHTML = '';
+  
+  if (!formError) {
+    container.hidden = true;
+    return
+  };
+
+  const message = document.createElement("p");
+  message.className = "patient-form__feedback-message";
+  message.textContent = formError;
+  container.appendChild(message);
+
+  const fieldNames = Object.keys(fieldErrors ?? {});
+  if (fieldNames.length > 0) {
+    const list = document.createElement("ul");
+    list.className = "patient-form__feedback-list";
+    fieldNames.forEach((field) => {
+      const item = document.createElement("li");
+      item.textContent = fieldErrors[field];
+      list.appendChild(item);
+    });
+    container.appendChild(list);
+  }
+
+  container.hidden = false;
+}
+
 /* ------------------------------------------------------------
    SEGURANÇA - por que escapar o texto?
    ------------------------------------------------------------
@@ -41,9 +69,11 @@ function patientCardTemplate(patient) {
   const cardModifier = patient.active ? "" : " patient-card--inactive";
   const badgeModifier = patient.active ? "status-badge--active" : "status-badge--inactive";
   const badgeLabel = patient.active ? "Ativo" : "Inativo";
+  const photoSrc = patient.photoUrl || "";
 
   return `
     <li class="patient-card${cardModifier}">
+      ${photoSrc ? `<img class="patient-card__photo" src="${photoSrc}" alt="" />` : `<div class="patient-card__photo"></div>`}
       <div class="d-flex justify-content-between align-items-start gap-2">
         <h2 class="patient-card__name">${escapeHtml(patient.name)}</h2>
         <span class="status-badge ${badgeModifier}">${badgeLabel}</span>
@@ -93,15 +123,15 @@ function emptyStateTemplate(searchTerm) {
  * exatamente esse problema que o React resolve. Você vai
  * entender o React muito melhor depois de ter vivido isso.
  */
-export function renderPatientList(patients, searchTerm, container) {
-  // escreva aqui
+export function renderPatientList(patients) {
+  const container = document.getElementById("patient-list");
+
   if (patients.length == 0) {
     container.innerHTML = emptyStateTemplate(searchTerm);
     return;
   }
   const cards = patients.map(patient => patientCardTemplate(patient));
   container.innerHTML = cards.join("");
-
 }
 
 /** Atualiza o contador de resultados. */
@@ -135,4 +165,25 @@ export function renderError(message, container) {
       </div>
     </li>
   `;
+}
+
+/**
+ * ============================================================
+ * TODO 14 (Encontro 2) -- preview de foto antes do envio
+ * ============================================================
+ * Uma funcao renderPhotoPreview() que le um novo campo de estado
+ * (ex.: state.previewUrl, setado via URL.createObjectURL no
+ * listener do <input type="file">) e mostra a imagem antes de
+ * qualquer requisicao ao servidor.
+ * ============================================================
+ */
+export function renderPhotoPreview(photoUrl, filename, container, containerTitle) {
+    if (!photoUrl) {
+      container.innerHTML = `<span class="patient-form__dropzone-icon" aria-hidden="true">🖼</span>`;
+      containerTitle.textContent = "Clique para anexar uma foto";
+    return;
+  }
+
+  container.innerHTML = `<img src="${photoUrl}" alt="Pré-visualização da foto do paciente" />`;
+  containerTitle.textContent = filename;
 }
