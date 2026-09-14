@@ -38,6 +38,7 @@ type PatientRow = {
   birth_date: string;
   national_id: string;
   active: number;
+  photo_path: string
 };
 
 function toPatientJson (row: any) {
@@ -46,7 +47,8 @@ function toPatientJson (row: any) {
     name: row.name,
     birthDate: row.birth_date,
     nationalId: row.national_id,
-    active: row.active === 1
+    active: row.active === 1,
+    photoPath: row.photo_path
   };
 }
 
@@ -86,11 +88,10 @@ export const patientsService = {
       throw new ConflictError("Já existe um paciente com este CNS!")
     }
     
-    const result = db.prepare("INSERT INTO patients (name, birth_date, national_id, active) VALUES (?, ?, ?, ?)").run(
+    const result = db.prepare("INSERT INTO patients (name, birth_date, national_id) VALUES (?, ?, ?)").run(
       data.name, 
       data.birthDate, 
-      data.nationalId, 
-      data.active ? 1 : 0
+      data.nationalId
     )
 
     const created = db
