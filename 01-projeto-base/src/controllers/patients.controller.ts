@@ -28,6 +28,7 @@
  */
 import { Request, Response } from "express";
 import { patientsService } from "../services/patients.service"
+import { BadRequestError, UnprocessableEntityError } from "../errors/HttpError";
 
 export const patientsController = {
     list(_req: Request, res: Response) {
@@ -39,9 +40,8 @@ export const patientsController = {
         const patientId = req.params.id;
 
         if (!patientId || Array.isArray(patientId)) {
-            return res.status(400).json({ error: "O ID do paciente é inválido" });
+            throw new BadRequestError('O ID do paciente é inválido!');
         }
-
 
         const patient = patientsService.getById(patientId);
         res.json(patient);   
@@ -50,6 +50,18 @@ export const patientsController = {
     create(req: Request, res: Response) {
         const newPatient = patientsService.create(req.body);
         res.status(201).json(newPatient);
+    },
+
+    uploadPhoto(req: Request, res: Response) {
+        if (!req.file) throw new UnprocessableEntityError('Arquivo de upload não processado!');
+
+        const patientId = req.params.id;
+        if (!patientId || Array.isArray(patientId)) {
+            throw new BadRequestError('O ID do paciente é inválido!');
+        }       
+        const updatedPatient = patientsService.setPhoto(patientId, req.file.filename);
+
+        res.status(200).json(updatedPatient);
     }
 }
 

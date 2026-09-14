@@ -26,6 +26,68 @@
   </header>
 
   <main class="container app-main">
+    <section aria-label="Novo paciente" class="patient-form">
+      <h2 class="section-heading__title">Novo paciente</h2>
+
+      <form id="patient-form" class="patient-form__fields">
+        <div class="patient-form__field">
+          <label for="patient-attachment" class="patient-form__label">
+            Foto do paciente (opcional)
+          </label>
+
+          <div class="patient-form__dropzone" id="patient-photo-dropzone">
+            <div class="patient-form__dropzone-preview" id="patient-photo-preview">
+              <span class="patient-form__dropzone-icon" aria-hidden="true">🖼</span>
+            </div>
+            <div class="patient-form__dropzone-text">
+              <p class="patient-form__dropzone-title" id="patient-photo-title">
+                Clique para anexar uma foto
+              </p>
+              <p class="patient-form__dropzone-hint">JPEG ou PNG</p>
+            </div>
+            <input
+              type="file"
+              id="patient-attachment"
+              name="attachment"
+              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+            />
+          </div>
+        </div>
+
+        <div class="patient-form__field">
+          <label for="patient-name" class="patient-form__label">
+            Nome completo
+          </label>
+          <input type="text" id="patient-name" name="name" class="patient-form__input" placeholder="Ex.: Maria da Silva" />
+        </div>
+
+        <div class="patient-form__group">
+          <div class="patient-form__field">
+            <label for="patient-birth-date" class="patient-form__label">
+              Data de nascimento
+            </label>
+            <input type="date" id="patient-birth-date" name="birthDate" class="patient-form__input" />
+          </div>
+
+          <div class="patient-form__field">
+            <label for="patient-national-id" class="patient-form__label">
+              CNS
+            </label>
+            <input type="text" id="patient-national-id" name="nationalId" class="patient-form__input" placeholder="Cartão Nacional de Saúde" />
+          </div>
+        </div>
+
+        <div class="patient-form__actions">
+          <button id="save-new-patient" type="submit" class="action-button action-button--primary">
+            Cadastrar
+          </button>
+        </div>
+        
+        <p id="patient-form-status" class="patient-form__status" hidden></p>
+        <div id="patient-form-error" class="patient-form__feedback patient-form__feedback--error" role="alert" hidden>
+        </div>
+      </form>
+    </section>
 
     <!-- ------------------------------------------------------
          Barra de filtros.
@@ -53,6 +115,7 @@
 
     <p id="result-counter" class="result-counter" aria-live="polite"></p>
 
+    <div id="form-error-container"></div>
     <!-- A lista é desenhada por render.js. Ela nasce vazia de propósito. -->
     <ul id="patient-list" class="patient-list"></ul>
 
@@ -60,5 +123,6 @@
 
   <!-- type="module" habilita import/export no navegador -->
   <script type="module" src="./js/app.js"></script>
+  <script type="module" src="./js/render.js"></script>
 </body>
 </html>
