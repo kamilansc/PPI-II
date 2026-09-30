@@ -44,6 +44,14 @@ module.exports = {
       from: { path: "^src/services" },
       to: { path: "^src/(controllers|routes|middlewares)|^node_modules/(express|multer)" },
     },
+    {
+      name: "so-repositories-importam-o-driver",
+      comment:
+        "Somente Repositories importam o driver do banco. Services e demais camadas dependem do contrato do repository, não da implementação.",
+      severity: "error",
+      from: { path: "^src/(?!repositories)" },
+      to: { path: "^src/database|@prisma" },
+    },
   ],
   options: {
     doNotFollow: { path: "node_modules" },
