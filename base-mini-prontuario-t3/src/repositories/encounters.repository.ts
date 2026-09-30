@@ -1,11 +1,3 @@
-/**
- * Service de Encounter.
- *
- * TODO ARQ-2 — mesmo movimento do ARQ-1: extrair
- * `repositories/encounters.repository.ts` (interface + adapter
- * SQLite) e remover o `import { db }` daqui.
- *
- */
 import { db } from "../database";
 import { getPatientById } from "../services/patients.service";
 import type { CreateEncounterInput } from "../validation/encounters.schemas";

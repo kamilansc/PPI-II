@@ -6,3 +6,5 @@ uploads/*
 .env
 .DS_Store
 .vscode/
+
+/src/generated/prisma
