@@ -1,4 +1,4 @@
-import { db } from "../database";
+import { prisma } from "../infra/prisma/client";
 import type { CreateMedicationInput } from "../validation/medications.schemas";
 
 export type MedicationJson = {
@@ -9,46 +9,24 @@ export type MedicationJson = {
 };
 
 export interface MedicationsRepository {
-	findByEncounter(encounterId: number): MedicationJson[];
-	create(encounterId: number, input: CreateMedicationInput): MedicationJson;
+	findByEncounter(encounterId: number): Promise<MedicationJson[]>;
+	create(encounterId: number, input: CreateMedicationInput): Promise<MedicationJson>;
 }
 
-type MedicationRow = {
-	id: number;
-	encounter_id: number;
-	medication: string;
-	dosage: string;
-};
-
-const SELECT = "SELECT id, encounter_id, medication, dosage FROM medication_requests";
-
-function toMedicationJson(row: MedicationRow): MedicationJson {
-	return {
-		id: row.id,
-		encounterId: row.encounter_id,
-		medication: row.medication,
-		dosage: row.dosage,
-	};
-}
-
-export class SqliteMedicationsRepository implements MedicationsRepository {
-	findByEncounter(encounterId: number): MedicationJson[] {
-		const rows = db
-			.prepare(`${SELECT} WHERE encounter_id = ? ORDER BY id`)
-			.all(encounterId) as MedicationRow[];
-
-		return rows.map(toMedicationJson);
+export class PrismaMedicationsRepository implements MedicationsRepository {
+	async findByEncounter(encounterId: number): Promise<MedicationJson[]> {
+		return prisma.medicationRequest.findMany({
+			where: { encounterId },
+			orderBy: { id: "asc" },
+		});
 	}
 
-	create(encounterId: number, input: CreateMedicationInput): MedicationJson {
-		const result = db
-			.prepare(
-				`INSERT INTO medication_requests (encounter_id, medication, dosage)
-				 VALUES (?, ?, ?)`,
-			)
-			.run(encounterId, input.medication, input.dosage);
-
-		const row = db.prepare(`${SELECT} WHERE id = ?`).get(result.lastInsertRowid) as MedicationRow;
-		return toMedicationJson(row);
+	async create(
+		encounterId: number,
+		input: CreateMedicationInput,
+	): Promise<MedicationJson> {
+		return prisma.medicationRequest.create({
+			data: { ...input, encounterId },
+		});
 	}
 }
