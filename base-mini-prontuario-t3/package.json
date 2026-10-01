@@ -13,6 +13,7 @@
     "gate": "bash gate.sh"
   },
   "dependencies": {
+    "@prisma/adapter-better-sqlite3": "^7.10.0",
     "@prisma/client": "^6.16.1",
     "argon2": "^0.44.0",
     "better-sqlite3": "^11.5.0",
