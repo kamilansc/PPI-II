@@ -23,12 +23,12 @@ function getPatientsRepository(): PatientsRepository {
   return patientsRepository;
 }
 
-export function listPatients() {
-  return getPatientsRepository().findAll();
+export async function listPatients() {
+  return await getPatientsRepository().findAll();
 }
 
-export function getPatientById(id: number) {
-  const patient = getPatientsRepository().findById(id);
+export async function getPatientById(id: number) {
+  const patient = await getPatientsRepository().findById(id);
 
   if (!patient) {
     // "Não encontrei" não é problema do servidor: é 404, não 500.
@@ -37,21 +37,20 @@ export function getPatientById(id: number) {
   return patient;
 }
 
-export function createPatient(input: CreatePatientInput) {
+export async function createPatient(input: CreatePatientInput) {
   const repository = getPatientsRepository();
   // Invariante N1: CNS único. Deixar o INSERT estourar viraria um
   // 500 mentiroso — o servidor está ótimo; o dado é que repetiu.
-  const duplicate = repository.findByNationalId(input.nationalId);
+  const duplicate = await repository.findByNationalId(input.nationalId);
 
   if (duplicate) {
     throw new ConflictError("Já existe um paciente com este CNS.");
   }
 
-  return getPatientById(repository.create(input));
+  return await repository.create(input);
 }
 
-export function setPatientPhoto(id: number, photoUrl: string) {
-  getPatientById(id); // garante o 404 antes de gravar
-  getPatientsRepository().updatePhoto(id, photoUrl);
-  return getPatientById(id);
+export async function setPatientPhoto(id: number, photoUrl: string) {
+  await getPatientById(id); // garante o 404 antes de gravar
+  return await getPatientsRepository().updatePhoto(id, photoUrl);
 }

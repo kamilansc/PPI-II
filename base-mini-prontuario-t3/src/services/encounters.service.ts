@@ -28,26 +28,25 @@ function getEncountersRepository(): EncountersRepository {
   return encountersRepository;
 }
 
-export function listEncountersByPatient(patientId: number) {
-  getPatientById(patientId); // 404 se o paciente não existe
+export async function listEncountersByPatient(patientId: number) {
+  await getPatientById(patientId); // 404 se o paciente não existe
 
   // Ordenamos no SQL: o banco tem índice e o dado chega pronto.
-  const patientEncounters = getEncountersRepository().findByPatient(patientId);
+  const patientEncounters = await getEncountersRepository().findByPatient(patientId);
   return patientEncounters;
 }
 
-export function getEncounterById(id: number) {
-  const encounter = getEncountersRepository().findById(id);
+export async function getEncounterById(id: number) {
+  const encounter = await getEncountersRepository().findById(id);
   if (!encounter) {
     throw new NotFoundError("Atendimento não encontrado.");
   }
   return encounter;
 }
 
-export function createEncounter(patientId: number, input: CreateEncounterInput) {
-  getPatientById(patientId);
+export async function createEncounter(patientId: number, input: CreateEncounterInput) {
+  await getPatientById(patientId);
 
-  const encounterId = getEncountersRepository().create(patientId, input);
-
-  return getEncounterById(encounterId);
+  const encounter = await getEncountersRepository().create(patientId, input);
+  return encounter;
 }
