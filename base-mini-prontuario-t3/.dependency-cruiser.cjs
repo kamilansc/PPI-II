@@ -54,7 +54,7 @@ module.exports = {
     },
   ],
   options: {
-    doNotFollow: { path: "node_modules" },
+    doNotFollow: { path: "node_modules|^src/generated/prisma" },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: "tsconfig.json" },
   },
