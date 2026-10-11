@@ -21,14 +21,14 @@ function getMedicationsRepository(): MedicationsRepository {
   return medicationsRepository;
 }
 
-export function listMedicationsByEncounter(encounterId: number) {
-  getEncounterById(encounterId); // 404 se o atendimento não existe
+export async function listMedicationsByEncounter(encounterId: number) {
+  await getEncounterById(encounterId); // 404 se o atendimento não existe
 
-  return getMedicationsRepository().findByEncounter(encounterId);
+  return await getMedicationsRepository().findByEncounter(encounterId);
 }
 
-export function createMedication(encounterId: number, input: CreateMedicationInput) {
-  getEncounterById(encounterId);
+export async function createMedication(encounterId: number, input: CreateMedicationInput) {
+  await getEncounterById(encounterId);
 
-  return getMedicationsRepository().create(encounterId, input); 
+  return await getMedicationsRepository().create(encounterId, input); 
 }

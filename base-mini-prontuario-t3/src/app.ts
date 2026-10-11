@@ -13,16 +13,18 @@ import { encountersRouter } from "./routes/encounters.routes";
 import { medicationsRouter } from "./routes/medications.routes";
 import { authRouter } from "./routes/auth.routes";
 import { errorHandler } from "./middlewares/errorHandler";
-import { SqlitePatientsRepository } from "./repositories/patients.repository";
-import { SqliteMedicationsRepository } from "./repositories/medications.repository";
-import { SqliteEncountersRepository } from "./repositories/encounters.repository";
+
+import { PrismaPatientsRepository } from "./repositories/PrismaPatientsRepository";
+import { PrismaMedicationsRepository } from "./repositories/PrismaMedicationsRepository";
+import { PrismaEncountersRepository } from "./repositories/PrismaEncountersRepository,";
+
 import { configurePatientsRepository } from "./services/patients.service";
 import { configureMedicationsRepository } from "./services/medications.service";
 import { configureEncountersRepository } from "./services/encounters.service";
 
-configurePatientsRepository(new SqlitePatientsRepository());
-configureMedicationsRepository(new SqliteMedicationsRepository());
-configureEncountersRepository(new SqliteEncountersRepository());
+configurePatientsRepository(new PrismaPatientsRepository());
+configureMedicationsRepository(new PrismaMedicationsRepository());
+configureEncountersRepository(new PrismaEncountersRepository());
 
 export const app = express();
 
